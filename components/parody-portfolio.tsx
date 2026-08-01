@@ -5,39 +5,46 @@ import { ArrowDown, ArrowUpRight, Asterisk, Circle } from 'lucide-react'
 const roles = [
   {
     years: '2024—NOW',
-    company: 'ONLYFANS',
-    role: 'Senior Vice President of Keeping It Tasteful',
-    copy: 'Led a cross-functional task force dedicated to moving the ring light two centimeters to the left. Revenue went up. Nobody knows why.',
-    tag: 'Strategic Lighting',
+    company: 'ONLYFANS — SELF-EMPLOYED-ish',
+    role: 'Premium Content Creator & Director of Strategic Thirst',
+    copy: 'Built a subscriber empire using one ring light, two houseplants, and the confidence of a man who has never opened his front-facing camera by accident. Personally replies “thanks babe” at enterprise scale.',
+    tag: 'Top 0.0001%*',
   },
   {
-    years: '2022—2024',
-    company: 'LINKEDIN',
-    role: 'Thought Leadership Thought Leader',
-    copy: 'Wrote “I am humbled to announce” so many times that humility filed a restraining order. Disrupted the carousel post by adding a seventh slide.',
-    tag: 'Humble Bragging',
+    years: '2023—2024',
+    company: 'ONLYFANS UNIVERSITY',
+    role: 'Professor of Advanced Paywall Studies',
+    copy: 'Taught creators how to turn “link in bio” into a complete go-to-market strategy. Thesis: scarcity is just forgetting to post for three weeks.',
+    tag: 'Magna Cum Loudly',
   },
   {
-    years: '2020—2022',
-    company: 'NETFLIX & CHILL, INC.',
-    role: 'Chief Chill Officer',
-    copy: 'Scaled chilling from one sofa to three. Reduced “are you still watching?” response times by 46% through aggressive remote-control optimization.',
-    tag: 'Horizontal Growth',
+    years: '2021—2023',
+    company: 'RING LIGHT CAPITAL',
+    role: 'Venture Partner, Bedroom Economy',
+    copy: 'Invested exclusively in flattering angles and suspiciously expensive bathrobes. Achieved a 400% return on investment and a 900% increase in mirror selfies.',
+    tag: 'Series DD',
   },
   {
-    years: '2018—2020',
+    years: '2019—2021',
+    company: 'LINKEDIN AFTER DARK',
+    role: 'B2B Content Creator (Business to Bedroom)',
+    copy: 'Combined corporate thought leadership with premium subscriber funnels. Every post began “I was laid off today” and ended with a discount code.',
+    tag: 'Thought Seduction',
+  },
+  {
+    years: '2017—2019',
     company: 'MY PARENTS’ WIFI',
-    role: 'Independent Digital Nomad',
-    copy: 'Managed a global operation from the spare bedroom. Successfully attended meetings in 11 time zones while physically never leaving Murcia.',
-    tag: 'Remote-ish',
+    role: 'Junior Webcam Logistics Coordinator',
+    copy: 'Managed a global media operation from the spare bedroom while shouting “I am in a meeting” whenever anyone touched the router.',
+    tag: 'Remote & Shirtless',
   },
 ]
 
 const facts = [
-  ['97%', 'meetings survived'],
-  ['14', 'tabs open forever'],
-  ['1.3M', 'synergy units'],
-  ['0', 'ties owned'],
+  ['0.01%', 'alleged top creator'],
+  ['47', 'ring lights expensed'],
+  ['€8.99', 'emotional availability'],
+  ['1', 'shirt for meetings'],
 ]
 
 export function ParodyPortfolio() {
@@ -60,20 +67,23 @@ export function ParodyPortfolio() {
           <div>
             <div className="mb-5 flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-muted-foreground">
               <span className="inline-block size-2 bg-accent" />
-              Available for money
+              Available for premium collaborations
             </div>
             <h1 className="max-w-6xl text-balance font-serif text-[clamp(4.5rem,13vw,10rem)] leading-[0.76] tracking-[-0.055em]">
               Mateo Garea<span className="text-accent">*</span>
             </h1>
+            <div className="mt-8 inline-flex -rotate-1 border-2 border-foreground bg-accent px-4 py-2 font-mono text-sm font-bold uppercase tracking-wider text-accent-foreground md:text-base">
+              OnlyFans content creator — yes, professionally
+            </div>
           </div>
 
           <div className="grid gap-8 pb-4 pt-16 md:grid-cols-12 md:items-end">
             <div className="md:col-span-4">
-              <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Currently pretending to be</p>
-              <p className="mt-2 text-xl font-medium">A very serious digital professional</p>
+              <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Current occupation</p>
+              <p className="mt-2 text-xl font-medium">Monetizing WiFi and audacity</p>
             </div>
             <p className="max-w-2xl text-pretty text-2xl leading-snug md:col-span-7 md:text-3xl">
-              I turn coffee into decks, decks into meetings, and meetings into other meetings. Sometimes, a product accidentally happens.
+              Full-time OnlyFans content creator. Part-time entrepreneur. Overtime explaining to relatives that it is, technically, a subscription SaaS business.
             </p>
             <a href="#experience" className="flex size-12 items-center justify-center justify-self-end border border-foreground transition-colors hover:bg-foreground hover:text-background" aria-label="See experience">
               <ArrowDown aria-hidden="true" size={20} />
@@ -85,8 +95,8 @@ export function ParodyPortfolio() {
       <section id="experience" className="px-5 py-20 md:px-8 md:py-28">
         <div className="mb-14 flex items-end justify-between border-b border-border pb-5">
           <div>
-            <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">01 / Questionable experience</p>
-            <h2 className="mt-3 font-serif text-5xl tracking-tight md:text-7xl">Career highlights</h2>
+            <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">01 / Premium professional experience</p>
+            <h2 className="mt-3 font-serif text-5xl tracking-tight md:text-7xl">Behind the paywall</h2>
           </div>
           <Asterisk className="hidden text-accent md:block" size={44} strokeWidth={1.5} aria-hidden="true" />
         </div>
@@ -117,7 +127,7 @@ export function ParodyPortfolio() {
               Big numbers.<br />Tiny context.
             </h2>
             <p className="mt-8 max-w-xl text-pretty text-lg leading-relaxed text-background/70">
-              Mateo is a fictional professional with very real confidence. He specializes in strategy, digital products, and nodding thoughtfully when somebody says “AI”.
+              Mateo is a fictional OnlyFans creator with very real confidence. He specializes in premium content, subscriber retention, and calling a bedroom “the studio” for tax purposes.
             </p>
           </div>
           <div className="grid grid-cols-2 border-l border-background/20 md:col-span-5">
