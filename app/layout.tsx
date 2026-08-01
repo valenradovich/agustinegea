@@ -8,7 +8,7 @@ const mono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono' })
 const serif = DM_Serif_Display({ weight: '400', subsets: ['latin'], variable: '--font-dm-serif' })
 
 export const metadata: Metadata = {
-  title: 'Mateo Garea — Professional-ish',
+  title: 'Agustin Egea — Professional-ish',
   description: 'The deeply unserious portfolio of a completely fictional professional.',
   generator: 'v0.app',
 }

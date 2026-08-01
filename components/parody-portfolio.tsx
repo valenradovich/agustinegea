@@ -52,14 +52,14 @@ export function ParodyPortfolio() {
     <main>
       <section className="min-h-screen border-b border-border px-5 py-5 md:px-8 md:py-7">
         <nav className="flex items-center justify-between font-mono text-xs uppercase tracking-wider" aria-label="Main navigation">
-          <a href="#top" className="flex items-center gap-2 font-bold" aria-label="Mateo Garea home">
-            <span className="flex size-7 items-center justify-center bg-foreground text-background">MG</span>
+          <a href="#top" className="flex items-center gap-2 font-bold" aria-label="Agustin Egea home">
+            <span className="flex size-7 items-center justify-center bg-foreground text-background">AE</span>
             <span className="hidden sm:inline">Portfolio-ish</span>
           </a>
           <div className="flex items-center gap-5 md:gap-8">
             <a className="underline-offset-4 hover:underline" href="#experience">Work</a>
             <a className="underline-offset-4 hover:underline" href="#about">About</a>
-            <a className="underline-offset-4 hover:underline" href="mailto:mateo@example.com">Hire him?</a>
+            <a className="underline-offset-4 hover:underline" href="mailto:agustin@example.com">Hire him?</a>
           </div>
         </nav>
 
@@ -70,7 +70,7 @@ export function ParodyPortfolio() {
               Available for premium collaborations
             </div>
             <h1 className="max-w-6xl text-balance font-serif text-[clamp(4.5rem,13vw,10rem)] leading-[0.76] tracking-[-0.055em]">
-              Mateo Garea<span className="text-accent">*</span>
+              Agustin Egea<span className="text-accent">*</span>
             </h1>
             <div className="mt-8 inline-flex -rotate-1 border-2 border-foreground bg-accent px-4 py-2 font-mono text-sm font-bold uppercase tracking-wider text-accent-foreground md:text-base">
               OnlyFans content creator — yes, professionally
@@ -127,7 +127,7 @@ export function ParodyPortfolio() {
               Big numbers.<br />Tiny context.
             </h2>
             <p className="mt-8 max-w-xl text-pretty text-lg leading-relaxed text-background/70">
-              Mateo is a fictional OnlyFans creator with very real confidence. He specializes in premium content, subscriber retention, and calling a bedroom “the studio” for tax purposes.
+              Agustin is a fictional OnlyFans creator with very real confidence. He specializes in premium content, subscriber retention, and calling a bedroom “the studio” for tax purposes.
             </p>
           </div>
           <div className="grid grid-cols-2 border-l border-background/20 md:col-span-5">
@@ -147,7 +147,7 @@ export function ParodyPortfolio() {
             <p className="font-mono text-xs uppercase tracking-widest">References available</p>
             <p className="mt-2 font-serif text-4xl md:text-6xl">His mum says he&apos;s brilliant.</p>
           </div>
-          <a href="mailto:mateo@example.com" className="group flex items-center gap-3 font-mono text-sm uppercase tracking-wider">
+          <a href="mailto:agustin@example.com" className="group flex items-center gap-3 font-mono text-sm uppercase tracking-wider">
             Make a terrible decision
             <Circle className="fill-current transition-transform group-hover:scale-75" size={14} aria-hidden="true" />
           </a>
