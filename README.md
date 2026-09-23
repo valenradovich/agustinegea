@@ -1,16 +1,25 @@
 # agustinegea
 
-A fictional parody portfolio built with Next.js, React, TypeScript, and Tailwind CSS. Fork it, change the copy, and share your own version with friends. The included demo contains adult-themed jokes.
+A shared fictional parody website built with Next.js, React, TypeScript, and Tailwind CSS. Friends contribute improvements to this website by opening pull requests against **`valenradovich/agustinegea` → `main`**. The site contains adult-themed jokes.
 
 No database, API keys, login, or paid services are required. The site is a single page with editable profile details, experience, statistics, and contact links.
 
+## Contribute to the website
+
+1. [Fork this repository](https://github.com/valenradovich/agustinegea/fork) into your GitHub account and clone your fork. Your fork is a workspace for proposing changes to the shared site.
+2. Create a branch, make your changes, and run the checks below.
+3. Push the branch to your fork and [open a pull request](https://github.com/valenradovich/agustinegea/compare) with **base repository `valenradovich/agustinegea`**, **base branch `main`**, and your fork/branch as the head.
+4. The maintainer reviews and merges accepted changes; Vercel then updates the shared website.
+
+You do not need your own deployment, domain, Vercel account, or access to the original v0 project. Contributors with write access can use a branch in this repository and still open a PR. See [CONTRIBUTING.md](CONTRIBUTING.md) for commands. AI agents should read [AGENTS.md](AGENTS.md) first.
+
 ## Run locally
 
-Install [Node.js 24](https://nodejs.org/) and the pinned package manager:
+Install [Node.js 24](https://nodejs.org/) and the pinned package manager. Replace `YOUR_GITHUB_USERNAME` with the account that owns your fork:
 
 ```sh
 npm install --global pnpm@10.10.0
-git clone https://github.com/valenradovich/agustinegea.git
+git clone https://github.com/YOUR_GITHUB_USERNAME/agustinegea.git
 cd agustinegea
 pnpm install --frozen-lockfile
 pnpm dev
@@ -18,9 +27,7 @@ pnpm dev
 
 If you use nvm, run `nvm install && nvm use` inside the repository before installing pnpm. Open [localhost:3000](http://localhost:3000). If that port is busy, use `pnpm dev --port 3001`.
 
-For an independent copy, click **Use this template → Create a new repository** on GitHub, then clone your new repository's URL instead. Choose **Fork** if you want to contribute changes back. You don't need access to the original v0 project or deployment.
-
-## Make it yours
+## Where to make changes
 
 | File | What to change |
 | --- | --- |
@@ -30,7 +37,7 @@ For an independent copy, click **Use this template → Create a new repository**
 | [`components/parody-portfolio.tsx`](components/parody-portfolio.tsx) | Page layout and section structure |
 | [`public/`](public/) | Icons and other static assets |
 
-The default email is a placeholder (`agustin@example.com`); replace it with an address you want to publish. Keep the fictional-parody disclaimer accurate for your version. The sample facts and experience are jokes, not real credentials.
+The current email is a placeholder (`agustin@example.com`). Changes to the site identity or public contact details should be intentional and explained in the PR. Keep the fictional-parody disclaimer accurate. The facts and experience on the site are jokes, not real credentials.
 
 ## Checks and production
 
@@ -45,20 +52,17 @@ Run `pnpm check` to run lint, typecheck, and build together. Vercel builds pull-
 
 Fonts are downloaded from Google by `next/font` at build time, then served by the app. Installation and builds need internet access.
 
-## Deploy your fork
+## Shared deployment
 
-For a personal, non-commercial copy, use the [free Vercel Hobby plan](https://vercel.com/docs/plans/hobby) and the included `vercel.app` address. No paid plan, custom domain, database, or analytics service is required. Free-plan usage limits still apply; buying or renewing a custom domain is separate.
+The maintainer manages the existing Vercel deployment on the [free Hobby plan](https://vercel.com/docs/plans/hobby), subject to its personal/non-commercial use and usage limits. Contributors do not need to deploy anything or purchase services. Custom domain renewal is separate from hosting.
 
-- **Vercel:** import your fork, select Next.js and Node.js 24, use `pnpm install --frozen-lockfile` to install and `pnpm build` to build, then deploy. Your fork uses its own deployment and domain.
-- **A Node.js host:** install dependencies, run `pnpm build`, then run `pnpm start` as a persistent process. The default port is 3000; use `pnpm start --port 8080` to change it. Put your host's HTTPS proxy in front of the server.
+Vercel creates PR previews when authorized. A preview from a fork may need maintainer authorization; local development and checks still work without it. Only the maintainer merges PRs into `main`, which triggers the shared site's production deployment.
 
-This repo uses the Next.js server build; it is not configured for GitHub Pages. The original repository may be connected to v0/Vercel automatic deployments, so merging to its `main` branch can publish changes.
-
-`vercel.json` keeps the install and build commands in the repository and overrides any old project-level v0 injection command. No private v0 build script is required.
+`vercel.json` keeps the install and build commands in the repository and overrides the old project-level v0 injection command. No private v0 build script is required.
 
 ### Optional analytics
 
-Analytics is off by default. To enable Vercel Web Analytics, enable it in your own Vercel project and set `NEXT_PUBLIC_ENABLE_ANALYTICS=true` before building. Locally, you can copy `.env.example` to `.env.local`; this is optional. Development builds never load analytics.
+Analytics is off by default. Only enable Vercel Web Analytics if the maintainer explicitly requests it; it requires enabling it in the shared Vercel project and setting `NEXT_PUBLIC_ENABLE_ANALYTICS=true` before building. Locally, you can copy `.env.example` to `.env.local`; this is optional. Development builds never load analytics.
 
 Never put secrets in `NEXT_PUBLIC_*` variables or `lib/portfolio.ts`: those values are public. Local environment files are ignored by Git.
 

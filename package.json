@@ -34,7 +34,7 @@
     "tailwindcss": "^4.3.3",
     "typescript": "5.7.3"
   },
-  "description": "A customizable fictional parody portfolio built with Next.js.",
+  "description": "The shared Agustin Egea parody website, improved through community pull requests.",
   "license": "MIT",
   "packageManager": "pnpm@10.10.0",
   "engines": {
