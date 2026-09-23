@@ -7,37 +7,32 @@ import { fileURLToPath } from 'node:url'
 import { test } from 'node:test'
 import { runPrank } from './prank-hook.mjs'
 
-test('only an interactive aguegea who says yes is offered the video', async () => {
+test('automatically opens only for an interactive aguegea', async () => {
   for (const scenario of [
-    { login: 'aguegea', yes: true, expected: true },
-    { login: 'Aguegea', yes: true, expected: true },
-    { login: 'aguegea', yes: false },
-    { login: 'someone-else', yes: true },
-    { login: 'aguegea', yes: true, ci: true },
-    { login: 'aguegea', yes: true, interactive: false },
+    { login: 'aguegea', expected: true },
+    { login: 'Aguegea', expected: true },
+    { login: 'someone-else' },
+    { login: 'aguegea', ci: true },
+    { login: 'aguegea', interactive: false },
   ]) {
     let opened = false
-    let prompted = false
     let lookedUp = false
     await runPrank({
       interactive: scenario.interactive ?? true,
       ci: scenario.ci ?? false,
       getLogin: () => { lookedUp = true; return scenario.login },
-      confirm: () => { prompted = true; return scenario.yes },
       open: (url) => { assert.equal(url, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'); opened = true },
-      log: () => {},
     })
     assert.equal(opened, Boolean(scenario.expected))
     if (scenario.ci || scenario.interactive === false) assert.equal(lookedUp, false)
-    if (scenario.login === 'someone-else') assert.equal(prompted, false)
   }
 })
 
-test('failed identity lookups, prompts, and browser commands never reject a push', async () => {
-  for (const failing of ['getLogin', 'confirm', 'open']) {
+test('failed identity lookups and browser commands never reject a push', async () => {
+  for (const failing of ['getLogin', 'open']) {
     await assert.doesNotReject(runPrank({
       interactive: true, ci: false,
-      getLogin: () => 'aguegea', confirm: () => true, open: () => {}, log: () => {},
+      getLogin: () => 'aguegea', open: () => {},
       [failing]: () => { throw new Error('Unavailable') },
     }))
   }
@@ -52,8 +47,11 @@ test('local enable/disable preserves other hooks and custom hook paths', () => {
     execFileSync('git', ['-c', 'init.templateDir=', 'init', '--quiet'], { cwd, env })
     const path = join(cwd, '.git/hooks/pre-push')
     assert.equal(run('enable').status, 0)
-    assert.match(readFileSync(path, 'utf8'), /scripts\/prank-hook.mjs run <\/dev\/tty/)
+    assert.match(readFileSync(path, 'utf8'), /scripts\/prank-hook.mjs run-auto <\/dev\/null/)
     assert.equal(run('enable').status, 0)
+    const legacyRun = run('run')
+    assert.equal(legacyRun.status, 0)
+    assert.equal(legacyRun.stdout + legacyRun.stderr, '')
     assert.equal(run('disable').status, 0)
     assert.equal(existsSync(path), false)
     assert.equal(run('disable').status, 0)

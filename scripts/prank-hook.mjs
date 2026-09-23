@@ -1,15 +1,22 @@
 import { execFileSync, spawnSync } from 'node:child_process'
 import { chmodSync, lstatSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
-import { createInterface } from 'node:readline'
 import { pathToFileURL } from 'node:url'
 
 const video = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-const hook = `#!/bin/sh
+const legacyHook = `#!/bin/sh
 # agustinegea: optional Rickroll prompt; installed explicitly by its user.
 # Git supplies refs on stdin. Read the prompt from the terminal instead.
 if [ -t 2 ] && [ -r /dev/tty ] && [ -f scripts/prank-hook.mjs ]; then
   node scripts/prank-hook.mjs run </dev/tty || :
+fi
+exit 0
+`
+
+const hook = `#!/bin/sh
+# agustinegea: automatically open a Rickroll for aguegea; explicitly enabled locally.
+if [ -t 2 ] && [ -f scripts/prank-hook.mjs ] && command -v node >/dev/null 2>&1; then
+  node scripts/prank-hook.mjs run-auto </dev/null || :
 fi
 exit 0
 `
@@ -21,27 +28,6 @@ function githubLogin() {
     stdio: ['ignore', 'pipe', 'ignore'],
     env: { ...process.env, GH_PROMPT_DISABLED: '1' },
   }).trim()
-}
-
-function ask() {
-  const rl = createInterface({ input: process.stdin, output: process.stderr })
-  return new Promise((resolveAnswer) => {
-    let finished = false
-    const timer = setTimeout(() => finish(false), 10_000)
-    function finish(answer) {
-      if (finished) return
-      finished = true
-      clearTimeout(timer)
-      resolveAnswer(answer)
-      rl.close()
-      process.stdin.pause()
-    }
-    rl.once('close', () => finish(false))
-    rl.once('SIGINT', () => finish(false))
-    rl.question('Open a Rickroll in your browser? [y/N] (skips after 10 seconds) ', (answer) => {
-      finish(/^y(es)?$/i.test(answer.trim()))
-    })
-  })
 }
 
 function openVideo(url) {
@@ -57,18 +43,15 @@ function openVideo(url) {
 }
 
 export async function runPrank({
-  interactive = Boolean(process.stdin.isTTY && process.stderr.isTTY),
+  interactive = Boolean(process.stderr.isTTY),
   ci = Boolean(process.env.CI),
   getLogin = githubLogin,
-  confirm = ask,
   open = openVideo,
-  log = (message) => process.stderr.write(`${message}\n`),
 } = {}) {
   if (!interactive || ci) return
   try {
     if ((await getLogin()).toLowerCase() !== 'aguegea') return
-    log('\naguegea detected. The Department of Questionable Commits requests a dance break. 🕺')
-    if (await confirm()) await open(video)
+    await open(video)
   } catch {
     // An optional joke must never reject a push, including on offline machines.
   }
@@ -89,7 +72,7 @@ function manageHook(action) {
   try {
     const stat = lstatSync(path)
     exists = true
-    if (!stat.isFile() || readFileSync(path, 'utf8') !== hook) {
+    if (!stat.isFile() || ![hook, legacyHook].includes(readFileSync(path, 'utf8'))) {
       throw new Error('A different pre-push hook exists. Leaving it untouched.')
     }
   } catch (error) {
@@ -102,14 +85,17 @@ function manageHook(action) {
   }
   mkdirSync(dirname(path), { recursive: true })
   if (!exists) writeFileSync(path, hook, { flag: 'wx', mode: 0o755 })
-  else chmodSync(path, 0o755)
-  console.log('Enabled locally: before pushing, aguegea will be offered a Rickroll. Nothing opens without a yes.')
+  else {
+    writeFileSync(path, hook)
+    chmodSync(path, 0o755)
+  }
+  console.log('Enabled locally: pushes by aguegea will automatically open a Rickroll, without a prompt.')
   console.log('Undo with: pnpm prank:disable')
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   const action = process.argv[2]
-  if (action === 'run') {
+  if (action === 'run-auto') {
     await runPrank()
   } else if (action === 'enable' || action === 'disable') {
     try {
@@ -118,8 +104,9 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
       console.error(error.message)
       process.exitCode = 1
     }
-  } else {
-    console.error('Usage: node scripts/prank-hook.mjs enable|disable|run')
+  } else if (action !== 'run') {
+    // Old prompt-version hooks stay inactive until their owner runs enable again.
+    console.error('Usage: node scripts/prank-hook.mjs enable|disable|run-auto')
     process.exitCode = 1
   }
 }
