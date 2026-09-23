@@ -8,7 +8,10 @@
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "next typegen && tsc --noEmit",
-    "check": "pnpm lint && pnpm typecheck && pnpm build"
+    "check": "pnpm lint && pnpm typecheck && pnpm build",
+    "prank:enable": "node scripts/prank-hook.mjs enable",
+    "prank:disable": "node scripts/prank-hook.mjs disable",
+    "test:prank": "node --test scripts/prank-hook.test.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

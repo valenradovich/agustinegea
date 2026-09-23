@@ -40,3 +40,5 @@ For documentation-only changes, check links and `git diff --check`; a production
 Do not commit credentials, local environment files, private contact information, or content you don't have permission to share. Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
 
 Be respectful and constructive with other contributors. Contributions are provided under the repository's [MIT license](LICENSE).
+
+For an optional local joke before pushing, see [the pre-push Rickroll](scripts/PRANK.md). It is never enabled automatically and is not required to contribute.
