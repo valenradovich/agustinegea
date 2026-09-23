@@ -66,6 +66,8 @@ Never put secrets in `NEXT_PUBLIC_*` variables or `lib/portfolio.ts`: those valu
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the fork-and-PR workflow and [SECURITY.md](SECURITY.md) for private vulnerability reports. Feature ideas and reproducible bug reports are welcome in [Issues](https://github.com/valenradovich/agustinegea/issues).
 
+Using an AI coding agent? Start with [AGENTS.md](AGENTS.md) for repository instructions and the complete PR workflow.
+
 ## License and credits
 
 [MIT](LICENSE). Keep the license notice when sharing copies. `private: true` in `package.json` only prevents accidental npm publication; it does not restrict use under the license.

@@ -2,6 +2,8 @@
 
 Small fixes, better documentation, and portfolio improvements are welcome. For a large change, open an issue first so we can agree on the direction.
 
+If you use an AI coding agent, have it read [AGENTS.md](AGENTS.md) first. It covers project constraints, validation, branches, forks, and the pull request workflow.
+
 1. Fork the repository and clone your fork.
 2. Install Node.js 24 and pnpm 10.10.0, then run `pnpm install --frozen-lockfile`.
 3. Create a branch: `git switch -c your-change`.
