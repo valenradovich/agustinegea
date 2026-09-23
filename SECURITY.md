@@ -12,4 +12,4 @@ This is a small community project; response times are not guaranteed. If a crede
 
 No secrets or database are needed for the default site. Everything in `lib/portfolio.ts` and any `NEXT_PUBLIC_*` variables is public. Keep local configuration in ignored `.env.local` files and configure deployment secrets through your hosting provider. Analytics is optional and disabled by default.
 
-Dependabot checks dependencies weekly. Run `pnpm audit` locally when updating packages; no separate CI audit workflow is configured.
+Dependency updates are proposed manually through pull requests. Run `pnpm audit` locally when updating packages; automatic Dependabot updates and a separate CI audit workflow are not configured.
