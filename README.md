@@ -52,6 +52,8 @@ Fonts are downloaded from Google by `next/font` at build time, then served by th
 
 This repo uses the Next.js server build; it is not configured for GitHub Pages. The original repository may be connected to v0/Vercel automatic deployments, so merging to its `main` branch can publish changes.
 
+`vercel.json` keeps the install and build commands in the repository and overrides any old project-level v0 injection command. No private v0 build script is required.
+
 ### Optional analytics
 
 Analytics is off by default. To enable Vercel Web Analytics, enable it in your own Vercel project and set `NEXT_PUBLIC_ENABLE_ANALYTICS=true` before building. Locally, you can copy `.env.example` to `.env.local`; this is optional. Development builds never load analytics.
