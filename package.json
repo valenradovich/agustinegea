@@ -12,10 +12,7 @@
     "check": "pnpm lint && pnpm typecheck && pnpm build",
     "hooks:enable": "node scripts/git-hooks.mjs enable",
     "hooks:disable": "node scripts/git-hooks.mjs disable",
-    "test:hooks": "node --test scripts/git-hooks.test.mjs",
-    "prank:enable": "node scripts/git-hooks.mjs enable",
-    "prank:disable": "node scripts/git-hooks.mjs disable",
-    "test:prank": "node --test scripts/git-hooks.test.mjs"
+    "test:hooks": "node --test scripts/git-hooks.test.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

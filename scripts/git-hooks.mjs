@@ -11,14 +11,6 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 // https://creativecommons.org/licenses/by/2.0/
 // Downloaded unchanged; renamed only. These media licenses are separate from the code's MIT license.
 export const imagePath = fileURLToPath(new URL('../public/logo.gif', import.meta.url))
-// Retain the previous installer signature so existing local hooks can be upgraded.
-const legacyHook = `#!/bin/sh
-# agustinegea: locally enabled image prank for aguegea.
-if [ -f scripts/prank-hook.mjs ] && command -v node >/dev/null 2>&1; then
-  node scripts/prank-hook.mjs run </dev/null >/dev/null 2>&1 || :
-fi
-exit 0
-`
 const hookNames = ['pre-commit', 'pre-push']
 const hook = `#!/bin/sh
 # agustinegea: repository Git hooks.
@@ -53,7 +45,7 @@ function openImage(path) {
 
 export async function runHook({
   ci = Boolean(process.env.CI),
-  skip = (process.env.AGUSTINEGEA_SKIP_HOOKS === '1' || process.env.AGUSTINEGEA_SKIP_PRANK === '1'),
+  skip = process.env.AGUSTINEGEA_SKIP_HOOKS === '1',
   getLogin = githubLogin,
   open = openImage,
   image = imagePath,
@@ -85,7 +77,7 @@ function manageHooks(action, { quiet = false } = {}) {
     try {
       const stat = lstatSync(path)
       exists = true
-      if (!stat.isFile() || ![hook, legacyHook].includes(readFileSync(path, 'utf8'))) {
+      if (!stat.isFile() || readFileSync(path, 'utf8') !== hook) {
         throw new Error(`A different ${name} hook exists. Leaving existing hooks untouched.`)
       }
     } catch (error) {
@@ -112,14 +104,14 @@ function manageHooks(action, { quiet = false } = {}) {
 }
 
 function installHooks() {
-  if (process.env.CI || process.env.VERCEL || (process.env.AGUSTINEGEA_SKIP_HOOKS === '1' || process.env.AGUSTINEGEA_SKIP_PRANK === '1')) return
+  if (process.env.CI || process.env.VERCEL || process.env.AGUSTINEGEA_SKIP_HOOKS === '1') return
   try {
     // An extracted copy inside another repository must not install hooks in its parent.
     const root = execFileSync('git', ['rev-parse', '--show-toplevel'], {
       encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'],
     }).trim()
     if (realpathSync(root) !== realpathSync(process.cwd())) return
-    const disabled = spawnSync('git', ['config', '--local', '--bool', '--get', 'agustinegea.prankDisabled'], {
+    const disabled = spawnSync('git', ['config', '--local', '--bool', '--get', 'agustinegea.hooksDisabled'], {
       encoding: 'utf8',
     })
     if (disabled.error || ![0, 1].includes(disabled.status) || disabled.stdout.trim() === 'true') return
@@ -137,7 +129,7 @@ export async function main(action) {
   } else if (action === 'enable' || action === 'disable') {
     try {
       manageHooks(action)
-      execFileSync('git', ['config', '--local', 'agustinegea.prankDisabled', String(action === 'disable')], {
+      execFileSync('git', ['config', '--local', 'agustinegea.hooksDisabled', String(action === 'disable')], {
         stdio: 'ignore',
       })
     } catch (error) {

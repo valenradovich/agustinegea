@@ -55,7 +55,7 @@ function repository(t) {
   const cwd = realpathSync(mkdtempSync(join(tmpdir(), 'repository hooks ')))
   t.after(() => rmSync(cwd, { recursive: true, force: true }))
   const env = {
-    ...process.env, CI: '', VERCEL: '', AGUSTINEGEA_SKIP_PRANK: '', AGUSTINEGEA_SKIP_HOOKS: '',
+    ...process.env, CI: '', VERCEL: '', AGUSTINEGEA_SKIP_HOOKS: '',
     GIT_CONFIG_GLOBAL: process.platform === 'win32' ? 'NUL' : '/dev/null',
     GIT_CONFIG_NOSYSTEM: '1',
   }
@@ -94,7 +94,7 @@ test('automatic installation is quiet, skips conflicts and preserves a disabled 
   const { cwd, env, git, run } = repository(t)
   const commit = join(cwd, '.git/hooks/pre-commit')
   const push = join(cwd, '.git/hooks/pre-push')
-  for (const flag of ['CI', 'VERCEL', 'AGUSTINEGEA_SKIP_PRANK', 'AGUSTINEGEA_SKIP_HOOKS']) {
+  for (const flag of ['CI', 'VERCEL', 'AGUSTINEGEA_SKIP_HOOKS']) {
     env[flag] = '1'
     assert.equal(run('install').status, 0)
     assert.equal(existsSync(commit), false)
@@ -123,34 +123,8 @@ test('automatic installation is quiet, skips conflicts and preserves a disabled 
   assert.equal(existsSync(commit), false)
   assert.equal(existsSync(push), false)
   assert.equal(run('enable').status, 0)
-  assert.equal(git('config', '--local', '--get', 'agustinegea.prankDisabled').trim(), 'false')
+  assert.equal(git('config', '--local', '--get', 'agustinegea.hooksDisabled').trim(), 'false')
   assert.equal(existsSync(commit), true)
-})
-
-test('existing hooks upgrade to the neutral entry point and the old CLI still works', (t) => {
-  const { cwd, env, run } = repository(t)
-  const legacy = `#!/bin/sh
-# agustinegea: locally enabled image prank for aguegea.
-if [ -f scripts/prank-hook.mjs ] && command -v node >/dev/null 2>&1; then
-  node scripts/prank-hook.mjs run </dev/null >/dev/null 2>&1 || :
-fi
-exit 0
-`
-  mkdirSync(join(cwd, '.git/hooks'), { recursive: true })
-  for (const name of ['pre-commit', 'pre-push']) {
-    writeFileSync(join(cwd, '.git/hooks', name), legacy, { mode: 0o755 })
-  }
-  const oldScript = fileURLToPath(new URL('./prank-hook.mjs', import.meta.url))
-  const result = spawnSync(process.execPath, [oldScript, 'install'], { cwd, env, encoding: 'utf8' })
-  assert.equal(result.status, 0)
-  for (const name of ['pre-commit', 'pre-push']) {
-    const installed = readFileSync(join(cwd, '.git/hooks', name), 'utf8')
-    assert.match(installed, /scripts\/git-hooks.mjs run/)
-    assert.doesNotMatch(installed, /prank/)
-  }
-  assert.equal(run('disable').status, 0)
-  assert.equal(existsSync(join(cwd, '.git/hooks/pre-commit')), false)
-  assert.equal(existsSync(join(cwd, '.git/hooks/pre-push')), false)
 })
 
 test('automatic setup skips non-repositories and copies nested inside another repo', (t) => {
@@ -212,7 +186,7 @@ fs.writeFileSync('dev-result.json', JSON.stringify({
   assert.equal(run('disable').status, 0)
   assert.deepEqual(dev(), { args: ['dev', '--port', '3001'], commitHook: false, pushHook: false })
   writeFileSync(join(cwd, '.git/hooks/pre-push'), '#!/bin/sh\nexit 42\n')
-  git('config', '--local', 'agustinegea.prankDisabled', 'false')
+  git('config', '--local', 'agustinegea.hooksDisabled', 'false')
   assert.deepEqual(dev(), { args: ['dev', '--port', '3001'], commitHook: false, pushHook: true })
   assert.equal(readFileSync(join(cwd, '.git/hooks/pre-push'), 'utf8'), '#!/bin/sh\nexit 42\n')
 })
