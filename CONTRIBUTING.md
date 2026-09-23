@@ -9,7 +9,7 @@ Small fixes, better documentation, and portfolio improvements are welcome. For a
 5. Run `pnpm check`. For visual changes, also check the page on a narrow and a wide screen, both color schemes, and with keyboard navigation. Include screenshots in the PR when useful.
 6. Commit your changes, push to your fork, and open a pull request against `main`. Describe the problem, your change, and how you checked it.
 
-Use pnpm and include lockfile changes when updating dependencies. CI must pass before merging. This small portfolio has no dedicated automated interaction test suite; lint, type checking, production builds, and manual browser checks are the current validation baseline.
+Use pnpm and include lockfile changes when updating dependencies. Run the local checks and confirm the Vercel preview builds before merging. This small portfolio has no dedicated automated interaction test suite; lint, type checking, production builds, and manual browser checks are the current validation baseline.
 
 Do not commit credentials, local environment files, private contact information, or content you don't have permission to share. Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
 

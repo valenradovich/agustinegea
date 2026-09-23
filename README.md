@@ -41,11 +41,13 @@ pnpm build      # Production build; TypeScript errors fail the build
 pnpm start      # Serve the production build locally
 ```
 
-Run `pnpm check` to run lint, typecheck, and build together. GitHub Actions runs the same checks and a dependency audit on pull requests and pushes to `main`. Commit `pnpm-lock.yaml` whenever dependencies change; use pnpm consistently.
+Run `pnpm check` to run lint, typecheck, and build together. Vercel builds pull-request previews and deploys changes to `main`; there is no separate GitHub Actions workflow. Run `pnpm audit` locally when updating dependencies. Commit `pnpm-lock.yaml` whenever dependencies change; use pnpm consistently.
 
 Fonts are downloaded from Google by `next/font` at build time, then served by the app. Installation and builds need internet access.
 
 ## Deploy your fork
+
+For a personal, non-commercial copy, use the [free Vercel Hobby plan](https://vercel.com/docs/plans/hobby) and the included `vercel.app` address. No paid plan, custom domain, database, or analytics service is required. Free-plan usage limits still apply; buying or renewing a custom domain is separate.
 
 - **Vercel:** import your fork, select Next.js and Node.js 24, use `pnpm install --frozen-lockfile` to install and `pnpm build` to build, then deploy. Your fork uses its own deployment and domain.
 - **A Node.js host:** install dependencies, run `pnpm build`, then run `pnpm start` as a persistent process. The default port is 3000; use `pnpm start --port 8080` to change it. Put your host's HTTPS proxy in front of the server.
