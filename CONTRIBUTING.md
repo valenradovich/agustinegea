@@ -4,9 +4,9 @@ Contribute improvements to the shared Agustin Egea website by opening a PR again
 
 If you use an AI coding agent, have it read [AGENTS.md](AGENTS.md) first. It covers project constraints, validation, branches, forks, and the pull request workflow.
 
-1. Fork [valenradovich/agustinegea](https://github.com/valenradovich/agustinegea/fork) and clone your fork. Contributors with write access may use a branch in the shared repository instead.
-2. Install Node.js 24 and pnpm 10.10.0, then run `pnpm install --frozen-lockfile`.
-3. Fetch the shared repository's latest `main` and create a topic branch from it. Preserve any existing local work before switching branches.
+1. Create or reuse a fork of [valenradovich/agustinegea](https://github.com/valenradovich/agustinegea/fork) under your GitHub account, then clone your fork. This is the default even with write access. Agents receiving a contribution request to "clone" the shared URL should follow this fork-first workflow. The repository owner uses a branch in the shared repository; an explicit user request for a direct checkout or a read-only clone takes precedence.
+2. Fetch the shared repository's latest `main` and create a topic branch from it. Preserve any existing local work before switching branches. Reuse an existing contribution branch when continuing its PR.
+3. Install Node.js 24 and pnpm 10.10.0, then run `pnpm install --frozen-lockfile` before editing, including when dependencies are already present.
 4. Make your changes. Keep profile copy in `lib/portfolio.ts`, layout in `components/`, and styles in `app/globals.css`.
 5. Run `pnpm check`. For visual changes, also check the page on a narrow and a wide screen, both color schemes, and with keyboard navigation. Include screenshots in the PR when useful.
 6. Commit your changes, push the topic branch to your fork, and open a pull request with base repository **`valenradovich/agustinegea`**, base branch **`main`**, and your fork/branch as the head. Describe the problem, your change, and how you checked it.
@@ -18,6 +18,7 @@ git remote -v
 git remote add upstream https://github.com/valenradovich/agustinegea.git
 git fetch upstream
 git switch -c your-change upstream/main
+pnpm install --frozen-lockfile
 # Make your changes, then:
 pnpm check
 git add <files-you-changed>
@@ -32,6 +33,19 @@ gh pr create --repo valenradovich/agustinegea --base main --head YOUR_GITHUB_USE
 ```
 
 Replace the username, branch, title, and body-file path. Follow the [PR template](.github/pull_request_template.md). The maintainer reviews and merges accepted changes; Vercel then deploys the shared site. Do not push directly to `main` or merge your own contribution.
+
+## Already cloned the shared repository?
+
+Keep your checkout and any local changes. Inspect `git status`, `git remote -v`, and `gh api user --jq .login` first. When `origin` is the shared repository and no `upstream` remote exists, run this from that checkout:
+
+```sh
+gh repo fork --clone=false --remote
+git remote -v
+```
+
+GitHub CLI creates or reuses your fork, makes it `origin`, and renames the previous `origin` to `upstream`. Verify both URLs before proceeding. If your existing remote layout differs, avoid automatic renaming: inspect it, then use `gh repo fork --clone=false --remote --remote-name fork` only when `fork` is unused or already points to your fork. Add a missing `upstream` pointing to the shared repository without replacing any existing remote; if that name is occupied by another repository, use a different unused name for the shared repository and substitute it in the fetch/branch commands.
+
+Use the actual fork remote when pushing (`git push -u fork your-change` if you named it `fork`). The PR target remains `valenradovich/agustinegea:main`. Do not create another checkout or discard work just to change the push destination. The repository owner skips fork creation and uses a topic branch; explicit user instructions take precedence. Read-only cloning does not require a fork or a PR.
 
 Use pnpm and include lockfile changes when updating dependencies. Run the local checks and confirm the Vercel preview builds before merging. This small portfolio has no dedicated automated interaction test suite; lint, type checking, production builds, and manual browser checks are the current validation baseline.
 
