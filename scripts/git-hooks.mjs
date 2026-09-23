@@ -3,8 +3,14 @@ import { chmodSync, existsSync, lstatSync, mkdirSync, readFileSync, realpathSync
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
-// Replace this file (or change its filename here) to use another repo image.
-export const imagePath = fileURLToPath(new URL('../public/aguegea-detected.svg', import.meta.url))
+// logo.gif: "Screamer2.gif", uploaded by Artistosteles, CC BY-SA 4.0.
+// https://commons.wikimedia.org/wiki/File:Screamer2.gif
+// https://creativecommons.org/licenses/by-sa/4.0/
+// Based on "Bad day...nice Halloween" by Frédéric DUPONT (darkpatator), CC BY 2.0.
+// https://www.flickr.com/photos/20149359@N00/408638625/
+// https://creativecommons.org/licenses/by/2.0/
+// Downloaded unchanged; renamed only. These media licenses are separate from the code's MIT license.
+export const imagePath = fileURLToPath(new URL('../public/logo.gif', import.meta.url))
 // Retain the previous installer signature so existing local hooks can be upgraded.
 const legacyHook = `#!/bin/sh
 # agustinegea: locally enabled image prank for aguegea.
@@ -32,6 +38,8 @@ function githubLogin() {
 }
 
 export function imageOpener(platform, path) {
+  // Preview shows GIF frames separately; Safari plays the animation.
+  if (platform === 'darwin' && path.toLowerCase().endsWith('.gif')) return ['open', ['-a', 'Safari', path]]
   if (platform === 'darwin') return ['open', [path]]
   if (platform === 'win32') return ['rundll32', ['url.dll,FileProtocolHandler', pathToFileURL(path).href]]
   return ['xdg-open', [path]]

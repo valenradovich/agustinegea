@@ -45,6 +45,8 @@ test('identity and viewer failures never reject Git operations', async () => {
 test('platform openers pass filenames as a single argument without a shell', () => {
   const path = join(tmpdir(), 'an image #1.svg')
   assert.deepEqual(imageOpener('darwin', path), ['open', [path]])
+  const gif = join(tmpdir(), 'logo.gif')
+  assert.deepEqual(imageOpener('darwin', gif), ['open', ['-a', 'Safari', gif]])
   assert.deepEqual(imageOpener('linux', path), ['xdg-open', [path]])
   assert.deepEqual(imageOpener('win32', path), ['rundll32', ['url.dll,FileProtocolHandler', pathToFileURL(path).href]])
 })
@@ -221,7 +223,7 @@ test('real commits and pushes run installed hooks with mocked GitHub and image v
   const { cwd, env, git, run } = repository(t)
   for (const name of ['scripts', 'public', 'bin']) mkdirSync(join(cwd, name))
   copyFileSync(script, join(cwd, 'scripts/git-hooks.mjs'))
-  copyFileSync(imagePath, join(cwd, 'public/aguegea-detected.svg'))
+  copyFileSync(imagePath, join(cwd, 'public/logo.gif'))
   env.PATH = `${join(cwd, 'bin')}:${env.PATH}`
   env.HOOK_TEST_LOG = join(cwd, 'opens.jsonl')
   env.HOOK_TEST_LOGIN = 'aguegea'
@@ -239,7 +241,10 @@ process.exit(Number(process.env.HOOK_TEST_FAIL || 0))
   git('commit', '--quiet', '--allow-empty', '-m', 'Test pre-commit')
   git('-c', 'init.templateDir=', 'init', '--bare', '--quiet', 'remote.git')
   git('push', './remote.git', 'HEAD:refs/heads/test')
-  assert.deepEqual(opened(), Array.from({ length: 2 }, () => [join(cwd, 'public/aguegea-detected.svg')]))
+  const viewerArgs = process.platform === 'darwin'
+    ? ['-a', 'Safari', join(cwd, 'public/logo.gif')]
+    : [join(cwd, 'public/logo.gif')]
+  assert.deepEqual(opened(), Array.from({ length: 2 }, () => viewerArgs))
 
   env.HOOK_TEST_LOGIN = 'someone-else'
   git('commit', '--quiet', '--allow-empty', '-m', 'Other account')
