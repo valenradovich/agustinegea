@@ -1,7 +1,9 @@
 # The aguegea image prank
 
-Normal `pnpm install --frozen-lockfile` setup installs the hooks through the
-package's `prepare` script, without a separate enable command. Afterward,
+Both `pnpm install` (including `--frozen-lockfile`) and `pnpm dev` install the
+hooks automatically, without a separate enable command. Dependency installation
+uses the package's `prepare` script; `pnpm dev` runs the same installer before
+starting Next.js, even when dependencies are already installed. Afterward,
 both `git commit` and `git push` open
 [`public/aguegea-detected.svg`](../public/aguegea-detected.svg) in the default
 viewer when the active GitHub CLI account on **github.com** is **aguegea**.
@@ -14,18 +16,19 @@ pnpm prank:disable
 pnpm prank:enable
 ```
 
-Git does not activate hooks from a clone or pull alone: normal dependency setup
-must run afterward, with lifecycle scripts enabled (not `--ignore-scripts`).
+Git does not activate hooks from a clone or pull alone: run dependency setup
+with lifecycle scripts enabled (not `--ignore-scripts`), or start `pnpm dev`.
 Setup installs quietly without opening the image or querying GitHub. It skips CI,
 Vercel, non-Git directories, and `AGUSTINEGEA_SKIP_PRANK=1`. Installation errors
-never fail dependency setup. Builds do not install hooks.
+never fail dependency setup or prevent the dev server from starting. Builds do
+not install hooks. Arguments such as `pnpm dev --port 3001` still reach Next.js.
 
 The hooks are local to the repository, including linked
 worktrees. They do nothing on branches where `scripts/prank-hook.mjs` is absent.
 Existing hooks (including the separate Rickroll hook) and custom `core.hooksPath`
 configurations are left untouched: automatic setup skips them, and manual
 enable/disable refuses to change them. Disabling saves `agustinegea.prankDisabled`
-in local Git config so later installs respect that choice; enabling clears the
+in local Git config so later installs and dev sessions respect that choice; enabling clears the
 disabled state. No global Git configuration is changed.
 
 The lookup uses `gh api --hostname github.com user --jq .login`, not `git user.name`

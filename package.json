@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "prepare": "node scripts/prank-hook.mjs install",
-    "dev": "next dev",
+    "dev": "node scripts/prank-hook.mjs install && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --max-warnings=0",

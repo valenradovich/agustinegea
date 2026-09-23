@@ -154,6 +154,41 @@ test('normal pnpm installation runs prepare and installs both hooks', (t) => {
   assert.equal(existsSync(join(cwd, '.git/hooks/pre-push')), true)
 })
 
+test('pnpm dev installs hooks without dependency setup and forwards Next.js arguments', {
+  skip: process.platform === 'win32' ? 'POSIX executable mock' : false,
+}, (t) => {
+  const { cwd, env, git, run } = repository(t)
+  mkdirSync(join(cwd, 'scripts'))
+  copyFileSync(script, join(cwd, 'scripts/prank-hook.mjs'))
+  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
+  writeFileSync(join(cwd, 'package.json'), JSON.stringify({
+    name: 'hook-dev-test', private: true,
+    packageManager: pkg.packageManager,
+    scripts: { dev: pkg.scripts.dev },
+  }))
+  const bin = join(cwd, 'node_modules/.bin')
+  mkdirSync(bin, { recursive: true })
+  writeFileSync(join(bin, 'next'), `#!/usr/bin/env node
+const fs = require('node:fs')
+fs.writeFileSync('dev-result.json', JSON.stringify({
+  args: process.argv.slice(2),
+  commitHook: fs.existsSync('.git/hooks/pre-commit'),
+  pushHook: fs.existsSync('.git/hooks/pre-push'),
+}))
+`, { mode: 0o755 })
+  const dev = () => {
+    execFileSync('pnpm', ['dev', '--port', '3001'], { cwd, env, stdio: 'pipe' })
+    return JSON.parse(readFileSync(join(cwd, 'dev-result.json'), 'utf8'))
+  }
+  assert.deepEqual(dev(), { args: ['dev', '--port', '3001'], commitHook: true, pushHook: true })
+  assert.equal(run('disable').status, 0)
+  assert.deepEqual(dev(), { args: ['dev', '--port', '3001'], commitHook: false, pushHook: false })
+  writeFileSync(join(cwd, '.git/hooks/pre-push'), '#!/bin/sh\nexit 42\n')
+  git('config', '--local', 'agustinegea.prankDisabled', 'false')
+  assert.deepEqual(dev(), { args: ['dev', '--port', '3001'], commitHook: false, pushHook: true })
+  assert.equal(readFileSync(join(cwd, '.git/hooks/pre-push'), 'utf8'), '#!/bin/sh\nexit 42\n')
+})
+
 test('real commits and pushes run installed hooks with mocked GitHub and image viewers', {
   skip: process.platform === 'win32' ? 'POSIX executable mocks; Windows opener tested separately' : false,
 }, (t) => {
