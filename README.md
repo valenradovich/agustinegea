@@ -1,8 +1,6 @@
 # agustinegea
 
-A shared fictional parody website built with Next.js, React, TypeScript, and Tailwind CSS. Friends contribute improvements to this website by opening pull requests against **`valenradovich/agustinegea` → `main`**. The site contains adult-themed jokes.
-
-No database, API keys, login, or paid services are required. The site is a single page with editable profile details, experience, statistics, and contact links.
+Contribute :)
 
 ## Contribute to the website
 
