@@ -4,16 +4,17 @@ These instructions apply to the entire repository. Read this file, [README.md](R
 
 ## Required setup before editing, committing, or pushing
 
-This is a required execution step for every local task, including documentation-only changes. After inspecting the working tree and remotes, **run this command from the repository root before the first edit**:
+This is a required execution step for every local task, including documentation-only changes. After inspecting the working tree and remotes, **run these commands in order from the repository root before the first edit**:
 
 ```sh
+pnpm install --frozen-lockfile
 node scripts/git-hooks.mjs install
 ```
 
-- Execute it even if dependencies are already installed, a dev server is already running, or another task previously ran setup. Reading the command or planning to run it does not satisfy this requirement. Repeat after changing branches or worktrees.
+- Execute both commands even if `node_modules` already exists, dependencies appear current, a dev server is already running, or another task previously ran setup. Do not skip `pnpm install --frozen-lockfile` or use `--ignore-scripts`; the repository's existing `prepare` lifecycle must run. Reading the commands or planning to run them does not satisfy this requirement. Repeat after changing branches or worktrees. If installation fails, resolve or report the failure before editing rather than treating setup as complete.
 - **Verify both hooks after setup:** use `git rev-parse --git-path hooks/pre-commit` and `git rev-parse --git-path hooks/pre-push` to locate them. Confirm both files are executable and invoke `node scripts/git-hooks.mjs run`. The installer intentionally exits successfully when it skips installation, so exit code zero alone is not proof that hooks are active.
 - If verification fails unexpectedly, diagnose setup before editing, committing, or pushing. CI/Vercel, an existing different hook, custom `core.hooksPath`, or an explicit user disable choice are supported exceptions: report the reason and preserve that configuration. Do not overwrite other hooks, clear a disable choice, or use `enable` to force installation.
-- Before implementing application changes, run `pnpm install --frozen-lockfile`. Start local development with `pnpm dev` (or `pnpm dev --port <unused-port>`). These commands also run the installer; do not substitute direct `next dev` or `npx next dev` commands that bypass this setup. Documentation-only work does not require installing dependencies or starting a server.
+- For application changes, start local development with `pnpm dev` (or `pnpm dev --port <unused-port>`). This command also runs the installer; do not substitute direct `next dev` or `npx next dev` commands that bypass this setup. Documentation-only work still requires dependency setup but does not require starting a server.
 - **Immediately before every `git commit` and every `git push`, rerun the installer and verify both hooks again.** Do not proceed with an unexplained missing or inactive hook.
 - Do not use `--no-verify`, set `AGUSTINEGEA_SKIP_HOOKS`, disable hooks, or change `core.hooksPath` to bypass this requirement unless the user explicitly requests it. Honor existing explicit disable choices as described above.
 - Record whether setup was verified or skipped for a supported reason in the task's validation summary. The installer needs only Node.js built-ins.
