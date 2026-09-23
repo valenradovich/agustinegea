@@ -40,3 +40,7 @@ For documentation-only changes, check links and `git diff --check`; a production
 Do not commit credentials, local environment files, private contact information, or content you don't have permission to share. Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
 
 Be respectful and constructive with other contributors. Contributions are provided under the repository's [MIT license](LICENSE).
+
+For the local commit/push image joke targeting `aguegea`, run `pnpm prank:enable`.
+See [the image hook setup](scripts/PRANK.md) for requirements, image replacement,
+and disabling it. This is optional and is not required to contribute.

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="700" viewBox="0 0 1000 700" role="img" aria-labelledby="title desc">
+  <title id="title">AGUEGEA DETECTED</title>
+  <desc id="desc">A suspicious yellow face asks: did you test that?</desc>
+  <rect width="1000" height="700" rx="36" fill="#161616"/>
+  <text x="500" y="100" text-anchor="middle" font-family="Arial, sans-serif" font-size="56" font-weight="900" fill="#fbe349">AGUEGEA DETECTED</text>
+  <circle cx="500" cy="330" r="160" fill="#fbe349"/>
+  <path d="M390 285 L460 300 M540 300 L610 275" fill="none" stroke="#161616" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="435" cy="330" r="13" fill="#161616"/>
+  <circle cx="565" cy="330" r="13" fill="#161616"/>
+  <path d="M445 413 Q500 388 555 413" fill="none" stroke="#161616" stroke-width="14" stroke-linecap="round"/>
+  <text x="500" y="575" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" font-weight="700" fill="#ffffff">Did you test that?</text>
+  <text x="500" y="635" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" fill="#b6b6b6">The repo is watching. Your Git command will continue.</text>
+</svg>
