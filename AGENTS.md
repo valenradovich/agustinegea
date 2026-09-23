@@ -2,6 +2,18 @@
 
 These instructions apply to the entire repository. Read this file, [README.md](README.md), and [CONTRIBUTING.md](CONTRIBUTING.md) before making changes. The goal is to help friends improve this one shared website through pull requests to `valenradovich/agustinegea`, base branch `main`. A contributor’s fork is a workspace for proposed changes. The expected deliverable is a PR to this repository, not a separately hosted website.
 
+## Fork first for contributions
+
+For contribution tasks, **create or reuse the contributor's fork, then clone that fork**. A request to "clone this repo" for a contribution is a request to prepare this workflow, not permission to push branches into the shared repository. Write access alone does not change this default.
+
+1. Check `gh auth status` and identify the contributor with `gh api user --jq .login`. Use their authenticated GitHub account. If authentication is unavailable, report what is needed; do not request tokens in chat or switch to someone else's account.
+2. Reuse a suitable existing fork and local checkout. Otherwise, from the intended parent directory, run `gh repo fork valenradovich/agustinegea --clone --default-branch-only`, then enter the cloned directory. Verify the actual fork URL, especially if the fork has a different name.
+3. If the shared repository was already cloned directly, keep that checkout and its local work. Follow the existing-checkout instructions in [CONTRIBUTING.md](CONTRIBUTING.md) to add the contributor's fork as a push destination. Do not delete, reclone, reset, or stash work to enforce the workflow.
+4. Verify remotes before editing: `upstream` should fetch `valenradovich/agustinegea`, and the chosen push remote should point to the contributor's fork. Do not blindly replace existing remotes. Fetch the shared repository's latest `main`, create a topic branch from it when the working tree is clean, and complete dependency setup below. When continuing a PR, preserve its existing branch and work.
+5. Push only the contribution branch to the verified fork remote. Open the PR with base **`valenradovich/agustinegea:main`** and head **`<contributor>:<branch>`**. Never infer the PR target from whichever remote the CLI happens to default to. Leave merging to the maintainer.
+
+Exceptions: the authenticated repository owner (`valenradovich`) uses a topic branch in the shared repository because they cannot fork it into the same account. Honor an explicit user instruction to use the shared repository directly or perform only a read-only clone; do not invent a contribution task. If fork creation fails, report the blocker instead of silently falling back to shared-repository pushes. These instructions guide agents that read them; they do not change what `git clone` does.
+
 ## Required dependency setup
 
 For every local task, including documentation-only changes, inspect the working tree and remotes, then **run this command from the repository root before the first edit**:
@@ -67,7 +79,7 @@ pnpm install --frozen-lockfile
 ## Branch, commit, and open the PR
 
 1. Work on a descriptive topic branch, never directly on `main`. Continue an existing branch when updating its PR. Otherwise start from the latest target `main` when the working tree is clean. Use `codex/<short-description>` by default, or follow the contributor's requested branch name.
-2. If you lack write access, use the contributor's fork and push the branch there. With write access, a topic branch in the target repository is fine. Confirm the push destination from the remotes before pushing. Never force-push or rewrite shared history unless explicitly instructed.
+2. Follow the fork-first workflow above, even if the contributor has write access. Only the stated owner or explicit-user exceptions use a topic branch in the shared repository. Confirm the push destination from the remotes before pushing. Never force-push or rewrite shared history unless explicitly instructed.
 3. Commit only the intended files with a clear message describing the change. Do not stage unrelated work with an indiscriminate `git add .`.
 4. Open a PR against **`valenradovich/agustinegea:main`**, or update the existing PR for that branch. Do not accidentally open the PR against the contributor’s fork. Follow [.github/pull_request_template.md](.github/pull_request_template.md). Use a concise title and explain the problem, resulting behavior, validation results, and any limitations. Mark checklist items truthfully; mark irrelevant checks as not applicable.
 5. If using GitHub CLI, write a multiline PR body to a file and pass `--body-file`. For a fork, use `--repo valenradovich/agustinegea --base main --head <contributor>:<branch>`; for a branch in the target repository, use `--head <branch>`. Replace `<contributor>` and `<branch>` with the actual fork owner and branch. Always specify `--repo valenradovich/agustinegea` so the target is explicit.
