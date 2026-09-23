@@ -3,12 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "prepare": "node scripts/git-hooks.mjs install",
+    "dev": "node scripts/git-hooks.mjs install && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "next typegen && tsc --noEmit",
-    "check": "pnpm lint && pnpm typecheck && pnpm build"
+    "check": "pnpm lint && pnpm typecheck && pnpm build",
+    "hooks:enable": "node scripts/git-hooks.mjs enable",
+    "hooks:disable": "node scripts/git-hooks.mjs disable",
+    "test:hooks": "node --test scripts/git-hooks.test.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

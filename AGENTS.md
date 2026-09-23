@@ -2,6 +2,22 @@
 
 These instructions apply to the entire repository. Read this file, [README.md](README.md), and [CONTRIBUTING.md](CONTRIBUTING.md) before making changes. The goal is to help friends improve this one shared website through pull requests to `valenradovich/agustinegea`, base branch `main`. A contributor’s fork is a workspace for proposed changes. The expected deliverable is a PR to this repository, not a separately hosted website.
 
+## Required setup before editing, committing, or pushing
+
+This is a required execution step for every local task, including documentation-only changes. After inspecting the working tree and remotes, **run this command from the repository root before the first edit**:
+
+```sh
+node scripts/git-hooks.mjs install
+```
+
+- Execute it even if dependencies are already installed, a dev server is already running, or another task previously ran setup. Reading the command or planning to run it does not satisfy this requirement. Repeat after changing branches or worktrees.
+- **Verify both hooks after setup:** use `git rev-parse --git-path hooks/pre-commit` and `git rev-parse --git-path hooks/pre-push` to locate them. Confirm both files are executable and invoke `node scripts/git-hooks.mjs run`. The installer intentionally exits successfully when it skips installation, so exit code zero alone is not proof that hooks are active.
+- If verification fails unexpectedly, diagnose setup before editing, committing, or pushing. CI/Vercel, an existing different hook, custom `core.hooksPath`, or an explicit user disable choice are supported exceptions: report the reason and preserve that configuration. Do not overwrite other hooks, clear a disable choice, or use `enable` to force installation.
+- Before implementing application changes, run `pnpm install --frozen-lockfile`. Start local development with `pnpm dev` (or `pnpm dev --port <unused-port>`). These commands also run the installer; do not substitute direct `next dev` or `npx next dev` commands that bypass this setup. Documentation-only work does not require installing dependencies or starting a server.
+- **Immediately before every `git commit` and every `git push`, rerun the installer and verify both hooks again.** Do not proceed with an unexplained missing or inactive hook.
+- Do not use `--no-verify`, set `AGUSTINEGEA_SKIP_HOOKS`, disable hooks, or change `core.hooksPath` to bypass this requirement unless the user explicitly requests it. Honor existing explicit disable choices as described above.
+- Record whether setup was verified or skipped for a supported reason in the task's validation summary. The installer needs only Node.js built-ins.
+
 ## Keep the project simple and free
 
 - Use the existing Next.js, React, TypeScript, and Tailwind stack. Prefer existing components and dependencies over adding new ones.
@@ -16,8 +32,9 @@ These instructions apply to the entire repository. Read this file, [README.md](R
 1. Inspect `git status`, the current branch, and `git remote -v`. Preserve unrelated work; do not reset, overwrite, or stash someone else's changes without permission.
 2. Verify the remotes. The contribution target is `https://github.com/valenradovich/agustinegea.git`, base branch `main`. In a fork, `origin` normally points to the contributor's fork; add `upstream` for the shared repository if it is missing. Never overwrite an existing remote blindly. Fetch `upstream` before creating a new contribution branch from `upstream/main`. If the contributor explicitly requests a different target, follow that request.
 3. Use Node.js 24 (`.nvmrc`) and pnpm 10.10.0 (`package.json`). Install dependencies with `pnpm install --frozen-lockfile`. Use pnpm exclusively and do not introduce npm or Yarn lockfiles.
-4. No `.env` file is required. `.env.example` documents optional public configuration. Never copy credentials from another project or machine.
-5. Run `pnpm dev` for local development. If port 3000 is occupied, choose an unused port with `pnpm dev --port <port>`; do not stop unrelated processes.
+4. Complete the required setup and hook verification above before making changes. Do not infer that a successful dependency install alone proves the hooks are active.
+5. No `.env` file is required. `.env.example` documents optional public configuration. Never copy credentials from another project or machine.
+6. Run `pnpm dev` for local development. If port 3000 is occupied, choose an unused port with `pnpm dev --port <port>`; do not stop unrelated processes.
 
 ## Make focused changes
 
