@@ -20,15 +20,6 @@ fi
 exit 0
 `
 
-function githubLogin() {
-  return execFileSync('gh', ['api', '--hostname', 'github.com', 'user', '--jq', '.login'], {
-    encoding: 'utf8',
-    timeout: 3000,
-    stdio: ['ignore', 'pipe', 'ignore'],
-    env: { ...process.env, GH_PROMPT_DISABLED: '1' },
-  }).trim()
-}
-
 export function imageOpener(platform, path) {
   // Preview shows GIF frames separately; Safari plays the animation.
   if (platform === 'darwin' && path.toLowerCase().endsWith('.gif')) return ['open', ['-a', 'Safari', path]]
@@ -46,16 +37,14 @@ function openImage(path) {
 export async function runHook({
   ci = Boolean(process.env.CI),
   skip = process.env.AGUSTINEGEA_SKIP_HOOKS === '1',
-  getLogin = githubLogin,
   open = openImage,
   image = imagePath,
 } = {}) {
   if (ci || skip || !existsSync(image)) return
   try {
-    if ((await getLogin()).trim().toLowerCase() !== 'aguegea') return
     await open(image)
   } catch {
-    // Missing tools, offline identity lookups and viewer failures must never block Git.
+    // Missing tools and viewer failures must never block Git.
   }
 }
 

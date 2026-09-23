@@ -42,5 +42,3 @@ Do not commit credentials, local environment files, private contact information,
 Be respectful and constructive with other contributors. Contributions are provided under the repository's [MIT license](LICENSE).
 
 Both `pnpm install` and `pnpm dev` install the repository's local Git hooks automatically.
-See [the hook documentation](scripts/HOOKS.md) for behavior, requirements,
-image replacement, and disabling them.

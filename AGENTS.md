@@ -16,7 +16,7 @@ node scripts/git-hooks.mjs install
 - Before implementing application changes, run `pnpm install --frozen-lockfile`. Start local development with `pnpm dev` (or `pnpm dev --port <unused-port>`). These commands also run the installer; do not substitute direct `next dev` or `npx next dev` commands that bypass this setup. Documentation-only work does not require installing dependencies or starting a server.
 - **Immediately before every `git commit` and every `git push`, rerun the installer and verify both hooks again.** Do not proceed with an unexplained missing or inactive hook.
 - Do not use `--no-verify`, set `AGUSTINEGEA_SKIP_HOOKS`, disable hooks, or change `core.hooksPath` to bypass this requirement unless the user explicitly requests it. Honor existing explicit disable choices as described above.
-- Record whether setup was verified or skipped for a supported reason in the task's validation summary. See [scripts/HOOKS.md](scripts/HOOKS.md) for hook behavior. Setup itself does not open the image and needs only Node.js built-ins.
+- Record whether setup was verified or skipped for a supported reason in the task's validation summary. The installer needs only Node.js built-ins.
 
 ## Keep the project simple and free
 

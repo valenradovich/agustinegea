@@ -9,37 +9,27 @@ import { imageOpener, imagePath, runHook } from './git-hooks.mjs'
 
 const script = fileURLToPath(new URL('./git-hooks.mjs', import.meta.url))
 
-test('only aguegea opens the local image; CI, bypass and missing images skip lookup', async () => {
+test('opens the local asset by default; CI, bypass and missing assets skip it', async () => {
   for (const scenario of [
-    { login: 'aguegea', expected: true },
-    { login: ' AgUeGeA\n', expected: true },
-    { login: 'someone-else' },
-    { login: 'aguegea-copy' },
-    { login: '' },
-    { login: 'aguegea', ci: true, noLookup: true },
-    { login: 'aguegea', skip: true, noLookup: true },
-    { login: 'aguegea', image: `${imagePath}.missing`, noLookup: true },
+    { expected: true },
+    { ci: true },
+    { skip: true },
+    { image: `${imagePath}.missing` },
   ]) {
     let opened = false
-    let lookedUp = false
     await runHook({
       ci: false, skip: false, ...scenario,
-      getLogin: () => { lookedUp = true; return scenario.login },
       open: (path) => { assert.equal(path, imagePath); opened = true },
     })
     assert.equal(opened, Boolean(scenario.expected))
-    assert.equal(lookedUp, !scenario.noLookup)
   }
 })
 
-test('identity and viewer failures never reject Git operations', async () => {
-  for (const failing of ['getLogin', 'open']) {
-    await assert.doesNotReject(runHook({
-      ci: false, skip: false,
-      getLogin: () => 'aguegea', open: () => {},
-      [failing]: () => { throw new Error('Unavailable') },
-    }))
-  }
+test('viewer failures never reject Git operations', async () => {
+  await assert.doesNotReject(runHook({
+    ci: false, skip: false,
+    open: () => { throw new Error('Unavailable') },
+  }))
 })
 
 test('platform openers pass filenames as a single argument without a shell', () => {
@@ -191,7 +181,7 @@ fs.writeFileSync('dev-result.json', JSON.stringify({
   assert.equal(readFileSync(join(cwd, '.git/hooks/pre-push'), 'utf8'), '#!/bin/sh\nexit 42\n')
 })
 
-test('real commits and pushes run installed hooks with mocked GitHub and image viewers', {
+test('real commits and pushes run for all contributors without account lookups', {
   skip: process.platform === 'win32' ? 'POSIX executable mocks; Windows opener tested separately' : false,
 }, (t) => {
   const { cwd, env, git, run } = repository(t)
@@ -200,8 +190,7 @@ test('real commits and pushes run installed hooks with mocked GitHub and image v
   copyFileSync(imagePath, join(cwd, 'public/logo.gif'))
   env.PATH = `${join(cwd, 'bin')}:${env.PATH}`
   env.HOOK_TEST_LOG = join(cwd, 'opens.jsonl')
-  env.HOOK_TEST_LOGIN = 'aguegea'
-  writeFileSync(join(cwd, 'bin/gh'), '#!/usr/bin/env node\nconsole.log(process.env.HOOK_TEST_LOGIN)\n', { mode: 0o755 })
+  writeFileSync(join(cwd, 'bin/gh'), '#!/usr/bin/env node\nrequire("node:fs").writeFileSync("gh-called", "unexpected")\nprocess.exit(1)\n', { mode: 0o755 })
   const opener = process.platform === 'darwin' ? 'open' : 'xdg-open'
   writeFileSync(join(cwd, 'bin', opener), `#!/usr/bin/env node
 require('node:fs').appendFileSync(process.env.HOOK_TEST_LOG, JSON.stringify(process.argv.slice(2)) + '\\n')
@@ -220,14 +209,15 @@ process.exit(Number(process.env.HOOK_TEST_FAIL || 0))
     : [join(cwd, 'public/logo.gif')]
   assert.deepEqual(opened(), Array.from({ length: 2 }, () => viewerArgs))
 
-  env.HOOK_TEST_LOGIN = 'someone-else'
+  git('config', 'user.name', 'Another contributor')
+  git('config', 'user.email', 'another@example.invalid')
   git('commit', '--quiet', '--allow-empty', '-m', 'Other account')
-  assert.equal(opened().length, 2)
-  env.HOOK_TEST_LOGIN = 'aguegea'
+  assert.equal(opened().length, 3)
   env.HOOK_TEST_FAIL = '1'
   git('commit', '--quiet', '--allow-empty', '-m', 'Viewer failure still commits')
-  assert.equal(opened().length, 3)
+  assert.equal(opened().length, 4)
   rmSync(join(cwd, 'scripts/git-hooks.mjs'))
   git('commit', '--quiet', '--allow-empty', '-m', 'Branch without hooks still commits')
-  assert.equal(opened().length, 3)
+  assert.equal(opened().length, 4)
+  assert.equal(existsSync(join(cwd, 'gh-called')), false)
 })
