@@ -1,5 +1,5 @@
 import { execFileSync, spawnSync } from 'node:child_process'
-import { chmodSync, existsSync, lstatSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
+import { chmodSync, existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, unlinkSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
@@ -51,7 +51,7 @@ export async function runPrank({
   }
 }
 
-function manageHooks(action) {
+function manageHooks(action, { quiet = false } = {}) {
   const configured = spawnSync('git', ['config', '--get', 'core.hooksPath'], { encoding: 'utf8' })
   if (configured.error || (configured.status !== 0 && configured.status !== 1)) {
     throw new Error('Unable to inspect Git hook configuration.')
@@ -87,24 +87,47 @@ function manageHooks(action) {
       else chmodSync(path, 0o755)
     }
   }
-  console.log(action === 'disable'
+  if (!quiet) console.log(action === 'disable'
     ? 'Image prank disabled locally.'
     : 'Enabled locally: commits and pushes by aguegea open the repo image. Undo: pnpm prank:disable')
 }
 
+function installHooks() {
+  if (process.env.CI || process.env.VERCEL || process.env.AGUSTINEGEA_SKIP_PRANK === '1') return
+  try {
+    // An extracted copy inside another repository must not install hooks in its parent.
+    const root = execFileSync('git', ['rev-parse', '--show-toplevel'], {
+      encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim()
+    if (realpathSync(root) !== realpathSync(process.cwd())) return
+    const disabled = spawnSync('git', ['config', '--local', '--bool', '--get', 'agustinegea.prankDisabled'], {
+      encoding: 'utf8',
+    })
+    if (disabled.error || ![0, 1].includes(disabled.status) || disabled.stdout.trim() === 'true') return
+    manageHooks('enable', { quiet: true })
+  } catch {
+    // Setup must also work without Git, outside a clone, or with existing hooks.
+  }
+}
+
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   const action = process.argv[2]
-  if (action === 'run') {
+  if (action === 'install') {
+    installHooks()
+  } else if (action === 'run') {
     await runPrank()
   } else if (action === 'enable' || action === 'disable') {
     try {
       manageHooks(action)
+      execFileSync('git', ['config', '--local', 'agustinegea.prankDisabled', String(action === 'disable')], {
+        stdio: 'ignore',
+      })
     } catch (error) {
       console.error(error.message)
       process.exitCode = 1
     }
   } else {
-    console.error('Usage: node scripts/prank-hook.mjs enable|disable|run')
+    console.error('Usage: node scripts/prank-hook.mjs install|enable|disable|run')
     process.exitCode = 1
   }
 }

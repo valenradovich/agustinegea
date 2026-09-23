@@ -41,6 +41,6 @@ Do not commit credentials, local environment files, private contact information,
 
 Be respectful and constructive with other contributors. Contributions are provided under the repository's [MIT license](LICENSE).
 
-For the local commit/push image joke targeting `aguegea`, run `pnpm prank:enable`.
-See [the image hook setup](scripts/PRANK.md) for requirements, image replacement,
-and disabling it. This is optional and is not required to contribute.
+Dependency setup installs the repository's local Git hooks automatically.
+See [the hook documentation](scripts/PRANK.md) for behavior, requirements,
+image replacement, and disabling them.

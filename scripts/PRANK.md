@@ -1,23 +1,32 @@
 # The aguegea image prank
 
-After a one-time local setup, both `git commit` and `git push` open
+Normal `pnpm install --frozen-lockfile` setup installs the hooks through the
+package's `prepare` script, without a separate enable command. Afterward,
+both `git commit` and `git push` open
 [`public/aguegea-detected.svg`](../public/aguegea-detected.svg) in the default
 viewer when the active GitHub CLI account on **github.com** is **aguegea**.
 Other accounts do nothing. The image is a replaceable placeholder.
 
 ```sh
-# Requires Node.js 24, Git and GitHub CLI signed in with gh auth login.
-pnpm prank:enable
-# To remove both hooks:
+# Remove both hooks and keep them disabled across future installs:
 pnpm prank:disable
+# Re-enable after explicitly disabling:
+pnpm prank:enable
 ```
 
-Git does not activate hooks from a clone or pull. Each contributor must run
-`pnpm prank:enable` once in their clone; dependency installation and builds do
-not install hooks. The hooks are local to the repository, including linked
+Git does not activate hooks from a clone or pull alone: normal dependency setup
+must run afterward, with lifecycle scripts enabled (not `--ignore-scripts`).
+Setup installs quietly without opening the image or querying GitHub. It skips CI,
+Vercel, non-Git directories, and `AGUSTINEGEA_SKIP_PRANK=1`. Installation errors
+never fail dependency setup. Builds do not install hooks.
+
+The hooks are local to the repository, including linked
 worktrees. They do nothing on branches where `scripts/prank-hook.mjs` is absent.
 Existing hooks (including the separate Rickroll hook) and custom `core.hooksPath`
-configurations are left untouched: enable/disable refuses to change them.
+configurations are left untouched: automatic setup skips them, and manual
+enable/disable refuses to change them. Disabling saves `agustinegea.prankDisabled`
+in local Git config so later installs respect that choice; enabling clears the
+disabled state. No global Git configuration is changed.
 
 The lookup uses `gh api --hostname github.com user --jq .login`, not `git user.name`
 or the author of the commit. Git does not provide a verified GitHub username to

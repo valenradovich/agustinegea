@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "prepare": "node scripts/prank-hook.mjs install",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
